@@ -4,8 +4,8 @@ Chandan Maji - 17110037
 
 ------
 ## 1(a)
-![Decision Surfaces of 3 classifiers](../result_images/q1_adaboost_1.png)
-![Final Decision Surface](../result_images/q1_adaboost_2.png)
+![Decision Surfaces of 3 classifiers](./result_images/q1_adaboost_1.png)
+![Final Decision Surface](./result_images/q1_adaboost_2.png)
 
 ## 1(b) Results of Iris Dataset
 ### Train Scores (60% of Dataset)
