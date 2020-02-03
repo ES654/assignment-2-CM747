@@ -1,70 +1,70 @@
+import numpy as np
+import pandas as pd
 
 def accuracy(y_hat, y):
-    """
-    Function to calculate the accuracy
-
-    Inputs:
-    > y_hat: pd.Series of predictions
-    > y: pd.Series of ground truth
-    Output:
-    > Returns the accuracy as float
-    """
-    """
-    The following assert checks if sizes of y_hat and y are equal.
-    Students are required to add appropriate assert checks at places to
-    ensure that the function does not fail in corner cases.
-    """
     assert(y_hat.size == y.size)
     # TODO: Write here
-    pass
+    count = 0
+    for i in range(y_hat.size):
+        if(y_hat.iat[i]==y.iat[i]):
+            count+=1
+    
+    return count/y.size
+
 
 def precision(y_hat, y, cls):
-    """
-    Function to calculate the precision
+    assert(y_hat.size==y.size)
 
-    Inputs:
-    > y_hat: pd.Series of predictions
-    > y: pd.Series of ground truth
-    > cls: The class chosen
-    Output:
-    > Returns the precision as float
-    """
-    pass
+    TruePositives = 0
+    TP_plus_FP = 0
+    for i in range(y_hat.size):
+        if(y_hat.iat[i]==cls):
+            if(y_hat.iat[i]==y.iat[i]):
+                TruePositives+=1
+            TP_plus_FP+=1
+    
+    if(TruePositives==0):
+        return 0
+    
+    return TruePositives/TP_plus_FP
+
 
 def recall(y_hat, y, cls):
-    """
-    Function to calculate the recall
+    assert(y_hat.size==y.size)
 
-    Inputs:
-    > y_hat: pd.Series of predictions
-    > y: pd.Series of ground truth
-    > cls: The class chosen
-    Output:
-    > Returns the recall as float
-    """
-    pass
+    TruePositives = 0
+    TP_plus_TN = 0
+    for i in range(y_hat.size):
+        if(y.iat[i]==cls):
+            if(y_hat.iat[i]==y.iat[i]):
+                TruePositives+=1
+            TP_plus_TN+=1
+    
+    if(TruePositives==0):
+        return 0
+    
+    return TruePositives/TP_plus_TN
+
 
 def rmse(y_hat, y):
-    """
-    Function to calculate the root-mean-squared-error(rmse)
+    assert(y.size==y_hat.size)
 
-    Inputs:
-    > y_hat: pd.Series of predictions
-    > y: pd.Series of ground truth
-    Output:
-    > Returns the rmse as float
-    """
+    diffSqSum = 0
+    for i in range(y.size):
+        diffSqSum += (y_hat.iloc[i]-y.iloc[i])**2
+    
+    result = np.sqrt(diffSqSum/y.size)
+    return result
 
-    pass
+    
 
 def mae(y_hat, y):
-    """
-    Function to calculate the mean-absolute-error(mae)
+    assert(y_hat.size==y.size)
 
-    Inputs:
-    > y_hat: pd.Series of predictions
-    > y: pd.Series of ground truth
-    Output:
-    > Returns the mae as float
-    """
-    pass
+    diffAbsSum = 0
+    for i in range(y.size):
+        diffAbsSum += abs(y_hat.iloc[i]-y.iloc[i])
+    
+    result = (diffAbsSum/y.size)
+    
+    return result

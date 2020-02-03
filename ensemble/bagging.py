@@ -1,3 +1,10 @@
+import pandas as pd
+import numpy as np
+import random
+import operator
+import matplotlib.pyplot as plt
+from matplotlib.colors import ListedColormap
+import copy
 
 class BaggingClassifier():
     def __init__(self, base_estimator, n_estimators=100):
@@ -6,8 +13,11 @@ class BaggingClassifier():
                                You can pass the object of the estimator class
         :param n_estimators: The number of estimators/models in ensemble.
         '''
+        self.n_estimators = n_estimators
+        self.classifiers = [copy.deepcopy(base_estimator) for i in range(n_estimators)]
+        self.X = [None for i in range(n_estimators)]
+        self.Y = [None for i in range(n_estimators)]
 
-        pass
 
     def fit(self, X, y):
         """
@@ -16,7 +26,18 @@ class BaggingClassifier():
         X: pd.DataFrame with rows as samples and columns as features (shape of X is N X P) where N is the number of samples and P is the number of columns.
         y: pd.Series with rows corresponding to output variable (shape of Y is N)
         """
-        pass
+        assert(X.shape[0]==y.size)
+
+        data = pd.concat([X,y],axis=1)
+
+        for round in range(self.n_estimators):
+            data1 = data.sample(n=y.size, replace=True).reset_index(drop=True)
+            X1 = data1.iloc[:, :-1]
+            y1 = data1.iloc[:, -1]
+            self.X[round] = X1
+            self.Y[round] = y1
+            self.classifiers[round].fit(X1,y1)
+
 
     def predict(self, X):
         """
@@ -26,7 +47,22 @@ class BaggingClassifier():
         Output:
         y: pd.Series with rows corresponding to output variable. THe output variable in a row is the prediction for sample in corresponding row in X.
         """
-        pass
+        y_hats = list()
+        for clf in self.classifiers:
+            y_hats.append(clf.predict(X))
+        
+        y_hat = list()
+        for i in range(X.shape[0]):
+            predictions = dict()
+            for pred in y_hats:
+                if(pred[i] in predictions):
+                    predictions[pred[i]] += 1
+                else:
+                    predictions[pred[i]] = 1
+            y_hat.append(max(predictions.items(), key=operator.itemgetter(1))[0])
+        
+        return pd.Series(y_hat)
+
 
     def plot(self):
         """
@@ -42,4 +78,44 @@ class BaggingClassifier():
         This function should return [fig1, fig2]
 
         """
-        pass
+
+        h=0.02
+        cm = plt.cm.RdBu
+        cm_bright = ListedColormap(['#FF0000', '#0000FF'])
+
+        fig1 = plt.figure(figsize=(5*self.n_estimators,5))
+
+        for i in range(self.n_estimators):
+            plt.subplot(1,self.n_estimators,i+1)
+            plt.scatter(self.X[i].iloc[:,0], self.X[i].iloc[:,1], c=self.Y[i], cmap=cm_bright, edgecolors='k')
+            plt.xlabel(str(self.X[i].columns[0]))
+            plt.ylabel(str(self.X[i].columns[1]))
+            plt.title("Round "+str(i+1))
+        
+        plt.show()
+
+        fig2 = plt.figure(figsize=(5*self.n_estimators,5))
+        
+        for i in range(self.n_estimators):
+            x_min, x_max = self.X[i].iloc[:, 0].min() - .5, self.X[i].iloc[:, 0].max() + .5
+            y_min, y_max = self.X[i].iloc[:, 1].min() - .5, self.X[i].iloc[:, 1].max() + .5
+            xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
+            
+            if hasattr(self.classifiers[i], "decision_function"):
+                Z = self.classifiers[i].decision_function(np.c_[xx.ravel(), yy.ravel()])
+            else:
+                Z = self.classifiers[i].predict_proba(np.c_[xx.ravel(), yy.ravel()])[:, 1]
+            
+            Z = Z.reshape(xx.shape)
+
+            plt.subplot(1,self.n_estimators,i+1)
+            plt.contourf(xx, yy, Z, cmap=cm, alpha=.8)
+            plt.scatter(self.X[i].iloc[:,0], self.X[i].iloc[:,1], c=self.Y[i], cmap=cm_bright, edgecolors='k')
+            
+            plt.xlabel(str(self.X[i].columns[0]))
+            plt.ylabel(str(self.X[i].columns[1]))
+            plt.title("Round "+str(i+1))
+        
+        plt.show()
+
+        return [fig1, fig2]
