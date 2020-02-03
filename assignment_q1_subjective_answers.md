@@ -22,7 +22,7 @@ Recall:  0.9285714285714286 <br>
 Precision:  0.9411764705882353 <br>
 Recall:  1.0 <br>
 
-![Decision Surfaces of 3 classifiers](../result_images/q1_adaboost_iris_1.png)
+![Decision Surfaces of 3 classifiers](./result_images/q1_adaboost_iris_1.png)
 
-![Final Decision Surface on IRIS Dataset](../result_images/q1_adaboost_iris_2.png)
+![Final Decision Surface on IRIS Dataset](./result_images/q1_adaboost_iris_2.png)
 
