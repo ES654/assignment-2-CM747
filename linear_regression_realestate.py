@@ -39,8 +39,9 @@ for i in range(X_data.shape[1]+1):
 
 for i in range(5):
     plt.subplot(2,3,i+1)
-    plt.bar(weightlabels, np.log(weights_5folds[i]))
-    plt.ylabel("log(co-effecients)")
+    plt.bar(weightlabels, (weights_5folds[i]))
+    plt.yscale("log")
+    plt.ylabel("Value of co-effecients in log scale")
     plt.xlabel("coefficients")
     plt.title("Fold "+str(i+1))
 plt.show()
