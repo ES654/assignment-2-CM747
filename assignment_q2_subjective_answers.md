@@ -18,6 +18,8 @@ MAE:  0.7590075233630846 <br>
 Theoritical time complexity of Normal Equation is O(P^3 + N*P^2), where P is the number of features and N is the number of samples.
 
 ![Time Complexity Heatmap](./result_images/q2_linearRegression_3.png)
+![Time Complexity vs N](./result_images/plt1.png)
+![Time Complexity vs P](./result_images/plt2.png)
 
 
 ## 2(c) Real Estate Dataset
